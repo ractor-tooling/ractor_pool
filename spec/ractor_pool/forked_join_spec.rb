@@ -167,6 +167,7 @@ RSpec.describe RactorPool::ForkedJoin do
 
       it 'returns the expected result' do
         expect(pool.results).to match_array(expected_results)
+        sleep(0.1) # Garbage collection needs time to run
       end
     end
   end
@@ -178,6 +179,7 @@ RSpec.describe RactorPool::ForkedJoin do
 
     it 'returns the expected result' do
       expect(pool.results).to match_array(expected_results)
+      sleep(0.1) # Garbage collection needs time to run
     end
   end
 end

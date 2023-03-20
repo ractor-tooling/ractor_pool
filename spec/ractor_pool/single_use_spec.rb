@@ -94,6 +94,7 @@ RSpec.describe RactorPool::SingleUse do
 
       it 'returns the expected result' do
         expect(pool.results).to eq(expected_results)
+        sleep(0.1)
       end
     end
 
@@ -123,6 +124,7 @@ RSpec.describe RactorPool::SingleUse do
 
       it 'returns the expected result' do
         expect(pool.results).to match_array(expected_results)
+        sleep(0.1)
       end
     end
 
@@ -164,6 +166,7 @@ RSpec.describe RactorPool::SingleUse do
 
     it 'returns the expected result' do
       expect(pool.results).to match_array(expected_results)
+      sleep(0.1)
     end
   end
 end
