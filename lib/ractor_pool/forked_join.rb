@@ -34,11 +34,12 @@ module RactorPool
       until workers.empty?
         begin
           worker, result = Ractor.select(*workers)
-          workers.delete(worker)
           results << result
         rescue Ractor::RemoteError => e
-          # log error e.inspect
-          puts e.inspect
+          worker = e.ractor
+          puts e.inspect # log error
+        ensure
+          workers.delete(worker)
         end
       end
       results
