@@ -37,6 +37,7 @@ RSpec.describe RactorPool::SingleUse do
 
       it 'returns the expected result' do
         expect(pool.results).to eq(expected_results)
+        sleep(0.1)
       end
     end
 
@@ -46,7 +47,7 @@ RSpec.describe RactorPool::SingleUse do
       let(:expected_results) { [[4, 5], [5, 8], [6, 13], [7, 21]] }
 
       context 'when the pool is created' do
-        after { pool.results }
+        after { pool.results; sleep(0.1) }
 
         it 'it creates an additional ractor for each input' do
           options[:worker_count] = 3
@@ -57,6 +58,7 @@ RSpec.describe RactorPool::SingleUse do
 
       it 'returns the expected result' do
         expect(pool.results).to match_array(expected_results)
+        sleep(0.1)
       end
     end
   end
@@ -121,6 +123,36 @@ RSpec.describe RactorPool::SingleUse do
 
       it 'returns the expected result' do
         expect(pool.results).to match_array(expected_results)
+      end
+    end
+
+    context 'with malformed inputs' do
+      let(:inputs) { [5, '6', 7] }
+      let(:expected_results) { [[5, 8], [7, 21]] }
+
+      context 'when the pool is created' do
+        after { pool.results; sleep(0.1) }
+
+        it 'it creates an additional ractor for each input' do
+          pool
+          expect(Ractor.count).to eq(expected_ractor_count)
+        end
+      end
+
+      context 'after the results are returned' do
+        before do
+          pool.results
+          sleep(0.1) # Garbage collection needs time to run
+        end
+
+        it 'the Ractor count is reduced' do
+          expect(Ractor.count).to eq(1) # 1 for the main ractor
+        end
+      end
+
+      it 'returns the expected result' do
+        expect(pool.results).to match_array(expected_results)
+        sleep(0.1)
       end
     end
   end
